@@ -13,7 +13,9 @@ export default function Header({ isAddingItem, onToggleAdd }: HeaderProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <BookOpen size={24} className="text-blue-600" />
-            <h1 className="text-2xl font-bold text-gray-900">Book Inventory</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Book Inventory
+              
+            </h1>
           </div>
           <button
             onClick={onToggleAdd}
@@ -22,7 +24,7 @@ export default function Header({ isAddingItem, onToggleAdd }: HeaderProps) {
             {isAddingItem ? 'View Inventory' : (
               <>
                 <Plus size={20} />
-                <span>Add Book</span>
+                
               </>
             )}
           </button>

@@ -25,13 +25,13 @@ export default function AddItemForm({ book, onSubmit, onDelete, onCancel }: AddI
   useEffect(() => {
     if (book) {
       setFormData({
-        title: book.title,
-        purchasePrice: book.purchasePrice.toString(),
-        sellingPrice: book.sellingPrice.toString(),
-        quantity: book.quantity.toString(),
-        category: book.category,
-        supplier: book.supplier,
-        imageUrl: book.imageUrl
+        title: book.title || '',
+        purchasePrice: (book.purchase_price || book.purchasePrice || 0).toString(),
+        sellingPrice: (book.selling_price || book.sellingPrice || 0).toString(),
+        quantity: (book.quantity || 0).toString(),
+        category: book.category || '',
+        supplier: book.supplier || '',
+        imageUrl: book.image_url || book.imageUrl || ''
       });
     }
   }, [book]);
@@ -40,9 +40,9 @@ export default function AddItemForm({ book, onSubmit, onDelete, onCancel }: AddI
     e.preventDefault();
     onSubmit({
       title: formData.title,
-      purchasePrice: parseFloat(formData.purchasePrice),
-      sellingPrice: parseFloat(formData.sellingPrice),
-      quantity: parseInt(formData.quantity),
+      purchasePrice: parseFloat(formData.purchasePrice) || 0,
+      sellingPrice: parseFloat(formData.sellingPrice) || 0,
+      quantity: parseInt(formData.quantity) || 0,
       category: formData.category,
       supplier: formData.supplier,
       imageUrl: formData.imageUrl
