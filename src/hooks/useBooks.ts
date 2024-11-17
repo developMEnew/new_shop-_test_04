@@ -3,6 +3,7 @@ import { supabase } from '../config/supabase';
 import type { BookItem } from '../types';
 import type { PostgrestError } from '@supabase/supabase-js';
 import toast from 'react-hot-toast';
+import { SAMPLE_BOOKS } from '../utils/constants';
 
 interface SupabaseErrorResponse {
   error: PostgrestError;
@@ -23,12 +24,18 @@ export function useBooks() {
   const [books, setBooks] = useState<BookItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
+  const MAX_RETRIES = 3;
 
   const handleError = (err: unknown, fallbackMessage: string) => {
     let errorMessage = fallbackMessage;
     
     if (isSupabaseError(err)) {
-      errorMessage = err.error.message;
+      if (err.error.message.includes('policy')) {
+        errorMessage = 'Database access error. Please try again.';
+      } else {
+        errorMessage = err.error.message;
+      }
     } else if (err instanceof Error) {
       errorMessage = err.message;
     }
@@ -37,6 +44,17 @@ export function useBooks() {
     setError(new Error(errorMessage));
     toast.error(errorMessage);
     return new Error(errorMessage);
+  };
+
+  const initializeDatabase = async () => {
+    try {
+      const { error: initError } = await supabase.rpc('init_books_table');
+      if (initError) throw initError;
+      return true;
+    } catch (err) {
+      console.error('Failed to initialize database:', err);
+      return false;
+    }
   };
 
   const loadBooks = useCallback(async () => {
@@ -51,8 +69,8 @@ export function useBooks() {
 
       if (error) {
         if (error.message.includes('does not exist')) {
-          const { error: initError } = await supabase.rpc('init_books_table');
-          if (initError) throw initError;
+          const initialized = await initializeDatabase();
+          if (!initialized) throw new Error('Failed to initialize database');
           
           const { data: retryData, error: retryError } = await supabase
             .from('books')
@@ -61,21 +79,32 @@ export function useBooks() {
             
           if (retryError) throw retryError;
           setBooks(retryData || []);
+        } else if (error.message.includes('policy')) {
+          await initializeDatabase();
+          throw error;
         } else {
           throw error;
         }
       } else {
         setBooks(data || []);
+        setRetryCount(0); // Reset retry count on successful load
       }
     } catch (err) {
-      throw handleError(err, 'Failed to load books');
+      if (retryCount < MAX_RETRIES) {
+        setRetryCount(prev => prev + 1);
+        setTimeout(() => loadBooks(), 1000 * Math.pow(2, retryCount)); // Exponential backoff
+      } else {
+        // If all retries fail, fall back to sample data
+        setBooks(SAMPLE_BOOKS);
+        toast.error('Unable to connect to database. Showing sample data.');
+      }
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [retryCount]);
 
   useEffect(() => {
-    loadBooks().catch(() => {}); // Error is already handled in loadBooks
+    loadBooks();
 
     const channel = supabase.channel('books_changes')
       .on('postgres_changes', 
@@ -85,7 +114,7 @@ export function useBooks() {
           table: 'books' 
         }, 
         () => {
-          loadBooks().catch(() => {});
+          loadBooks();
         }
       )
       .subscribe();
@@ -134,7 +163,14 @@ export function useBooks() {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        if (error.message.includes('policy')) {
+          await initializeDatabase();
+          throw error;
+        } else {
+          throw error;
+        }
+      }
       
       toast.success('Book added successfully');
       await loadBooks();
@@ -183,7 +219,14 @@ export function useBooks() {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        if (error.message.includes('policy')) {
+          await initializeDatabase();
+          throw error;
+        } else {
+          throw error;
+        }
+      }
       
       toast.success('Book updated successfully');
       await loadBooks();
@@ -202,7 +245,14 @@ export function useBooks() {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        if (error.message.includes('policy')) {
+          await initializeDatabase();
+          throw error;
+        } else {
+          throw error;
+        }
+      }
       
       toast.success('Book deleted successfully');
       await loadBooks();

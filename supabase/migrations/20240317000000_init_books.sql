@@ -11,6 +11,31 @@ create table if not exists books (
   image_url text not null
 );
 
+-- Enable RLS
+alter table books enable row level security;
+
+-- Create policies for anonymous access
+create policy "Allow anonymous select" on books
+  for select
+  to anon
+  using (true);
+
+create policy "Allow anonymous insert" on books
+  for insert
+  to anon
+  with check (true);
+
+create policy "Allow anonymous update" on books
+  for update
+  to anon
+  using (true)
+  with check (true);
+
+create policy "Allow anonymous delete" on books
+  for delete
+  to anon
+  using (true);
+
 -- Create a function to initialize the books table
 create or replace function init_books_table()
 returns void
@@ -30,6 +55,31 @@ begin
     date_added timestamp with time zone default timezone('utc'::text, now()) not null,
     image_url text not null
   );
+
+  -- Enable RLS
+  alter table books enable row level security;
+
+  -- Create policies for anonymous access
+  create policy if not exists "Allow anonymous select" on books
+    for select
+    to anon
+    using (true);
+
+  create policy if not exists "Allow anonymous insert" on books
+    for insert
+    to anon
+    with check (true);
+
+  create policy if not exists "Allow anonymous update" on books
+    for update
+    to anon
+    using (true)
+    with check (true);
+
+  create policy if not exists "Allow anonymous delete" on books
+    for delete
+    to anon
+    using (true);
 
   -- Create the storage bucket if it doesn't exist
   insert into storage.buckets (id, name)
