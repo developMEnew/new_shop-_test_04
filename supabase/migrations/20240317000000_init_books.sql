@@ -14,6 +14,12 @@ create table if not exists books (
 -- Enable RLS
 alter table books enable row level security;
 
+-- Drop existing policies if they exist
+drop policy if exists "Allow anonymous select" on books;
+drop policy if exists "Allow anonymous insert" on books;
+drop policy if exists "Allow anonymous update" on books;
+drop policy if exists "Allow anonymous delete" on books;
+
 -- Create policies for anonymous access
 create policy "Allow anonymous select" on books
   for select
@@ -36,7 +42,7 @@ create policy "Allow anonymous delete" on books
   to anon
   using (true);
 
--- Create a function to initialize the books table
+-- Create a function to initialize the books table and storage
 create or replace function init_books_table()
 returns void
 language plpgsql
@@ -59,38 +65,46 @@ begin
   -- Enable RLS
   alter table books enable row level security;
 
+  -- Drop existing policies if they exist
+  drop policy if exists "Allow anonymous select" on books;
+  drop policy if exists "Allow anonymous insert" on books;
+  drop policy if exists "Allow anonymous update" on books;
+  drop policy if exists "Allow anonymous delete" on books;
+
   -- Create policies for anonymous access
-  create policy if not exists "Allow anonymous select" on books
+  create policy "Allow anonymous select" on books
     for select
     to anon
     using (true);
 
-  create policy if not exists "Allow anonymous insert" on books
+  create policy "Allow anonymous insert" on books
     for insert
     to anon
     with check (true);
 
-  create policy if not exists "Allow anonymous update" on books
+  create policy "Allow anonymous update" on books
     for update
     to anon
     using (true)
     with check (true);
 
-  create policy if not exists "Allow anonymous delete" on books
+  create policy "Allow anonymous delete" on books
     for delete
     to anon
     using (true);
 
   -- Create the storage bucket if it doesn't exist
-  insert into storage.buckets (id, name)
-  values ('book-images', 'book-images')
-  on conflict (id) do nothing;
+  insert into storage.buckets (id, name, public)
+  values ('book-images', 'book-images', true)
+  on conflict (id) do update set public = true;
 
-  -- Set up storage bucket policy
-  insert into storage.policies (bucket_id, name, permission, definition)
-  values
-    ('book-images', 'Public Read', 'SELECT', '(bucket_id = ''book-images''::text)'),
-    ('book-images', 'Auth Upload', 'INSERT', '(bucket_id = ''book-images''::text)')
-  on conflict (bucket_id, name) do nothing;
+  -- Drop existing storage policies if they exist
+  drop policy if exists "Public Access" on storage.objects;
+
+  -- Set up storage bucket policies for anonymous access
+  create policy "Public Access"
+    on storage.objects for all
+    using ( bucket_id = 'book-images' )
+    with check ( bucket_id = 'book-images' );
 end;
 $$;

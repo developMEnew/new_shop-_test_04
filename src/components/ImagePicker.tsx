@@ -9,15 +9,55 @@ interface ImagePickerProps {
 
 export default function ImagePicker({ selectedUrl, onSelect }: ImagePickerProps) {
   const [isOpen, setIsOpen] = React.useState(false);
+  const [previewUrl, setPreviewUrl] = React.useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  React.useEffect(() => {
+    if (selectedUrl) {
+      // Validate the URL before setting it as preview
+      const img = new Image();
+      img.onload = () => setPreviewUrl(selectedUrl);
+      img.onerror = () => setPreviewUrl('');
+      img.src = selectedUrl;
+    } else {
+      setPreviewUrl('');
+    }
+  }, [selectedUrl]);
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      onSelect(imageUrl);
-      setIsOpen(false);
+      try {
+        const imageUrl = URL.createObjectURL(file);
+        // Validate the image before setting it
+        const img = new Image();
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = imageUrl;
+        });
+        setPreviewUrl(imageUrl);
+        onSelect(imageUrl);
+        setIsOpen(false);
+      } catch (error) {
+        console.error('Invalid image file:', error);
+        setPreviewUrl('');
+      }
     }
+  };
+
+  const handlePresetSelect = (url: string) => {
+    const img = new Image();
+    img.onload = () => {
+      setPreviewUrl(url);
+      onSelect(url);
+      setIsOpen(false);
+    };
+    img.onerror = () => {
+      console.error('Failed to load preset image:', url);
+      setPreviewUrl('');
+    };
+    img.src = url;
   };
 
   return (
@@ -27,22 +67,25 @@ export default function ImagePicker({ selectedUrl, onSelect }: ImagePickerProps)
           className="relative border border-gray-300 rounded-lg overflow-hidden cursor-pointer group"
           onClick={() => setIsOpen(!isOpen)}
         >
-          {selectedUrl ? (
-            <img 
-              src={selectedUrl} 
-              alt="Selected book"
-              className="w-full h-48 object-cover"
-            />
+          {previewUrl ? (
+            <div className="relative w-full h-48">
+              <img 
+                src={previewUrl} 
+                alt="Selected book"
+                className="w-full h-full object-cover"
+                onError={() => setPreviewUrl('')}
+              />
+              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all flex items-center justify-center">
+                <span className="text-white bg-black bg-opacity-50 px-3 py-1 rounded-full text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                  Choose Preset
+                </span>
+              </div>
+            </div>
           ) : (
             <div className="w-full h-48 bg-gray-50 flex items-center justify-center">
               <ImageIcon size={48} className="text-gray-400" />
             </div>
           )}
-          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all flex items-center justify-center">
-            <span className="text-white bg-black bg-opacity-50 px-3 py-1 rounded-full text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-              Choose Preset
-            </span>
-          </div>
         </div>
 
         <div 
@@ -70,18 +113,18 @@ export default function ImagePicker({ selectedUrl, onSelect }: ImagePickerProps)
             {BOOK_IMAGES.map((image) => (
               <div
                 key={image.id}
-                onClick={() => {
-                  onSelect(image.url);
-                  setIsOpen(false);
-                }}
+                onClick={() => handlePresetSelect(image.url)}
                 className={`relative cursor-pointer rounded-lg overflow-hidden ${
-                  selectedUrl === image.url ? 'ring-2 ring-blue-500' : ''
+                  previewUrl === image.url ? 'ring-2 ring-blue-500' : ''
                 }`}
               >
                 <img
                   src={image.thumbnail}
                   alt={image.description}
                   className="w-full h-20 object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = image.url;
+                  }}
                 />
                 <div className="absolute inset-0 hover:bg-black hover:bg-opacity-10 transition-colors" />
               </div>

@@ -46,6 +46,47 @@ export function useBooks() {
     return new Error(errorMessage);
   };
 
+  const uploadImage = async (imageFile: Blob): Promise<string> => {
+    try {
+      // Initialize storage if needed
+      await initializeDatabase();
+
+      const fileExt = imageFile.type.split('/')[1];
+      const fileName = `${Date.now()}.${fileExt}`;
+
+      const { error: uploadError, data } = await supabase.storage
+        .from('book-images')
+        .upload(fileName, imageFile, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (uploadError) {
+        if (uploadError.message.includes('storage not initialized')) {
+          await initializeDatabase();
+          const { error: retryError, data: retryData } = await supabase.storage
+            .from('book-images')
+            .upload(fileName, imageFile, {
+              cacheControl: '3600',
+              upsert: false
+            });
+          if (retryError) throw retryError;
+        } else {
+          throw uploadError;
+        }
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('book-images')
+        .getPublicUrl(fileName);
+
+      return publicUrl;
+    } catch (err) {
+      console.error('Image upload error:', err);
+      throw new Error('Failed to upload image. Please try again.');
+    }
+  };
+
   const initializeDatabase = async () => {
     try {
       const { error: initError } = await supabase.rpc('init_books_table');
@@ -87,14 +128,13 @@ export function useBooks() {
         }
       } else {
         setBooks(data || []);
-        setRetryCount(0); // Reset retry count on successful load
+        setRetryCount(0);
       }
     } catch (err) {
       if (retryCount < MAX_RETRIES) {
         setRetryCount(prev => prev + 1);
-        setTimeout(() => loadBooks(), 1000 * Math.pow(2, retryCount)); // Exponential backoff
+        setTimeout(() => loadBooks(), 1000 * Math.pow(2, retryCount));
       } else {
-        // If all retries fail, fall back to sample data
         setBooks(SAMPLE_BOOKS);
         toast.error('Unable to connect to database. Showing sample data.');
       }
@@ -130,23 +170,9 @@ export function useBooks() {
       let imageUrl = bookData.imageUrl;
       
       if (imageUrl.startsWith('blob:')) {
-        const file = await fetch(imageUrl).then(r => r.blob());
-        const fileName = `book_${Date.now()}.${file.type.split('/')[1]}`;
-        
-        const { error: uploadError } = await supabase.storage
-          .from('book-images')
-          .upload(fileName, file, {
-            cacheControl: '3600',
-            upsert: false
-          });
-
-        if (uploadError) throw uploadError;
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('book-images')
-          .getPublicUrl(fileName);
-
-        imageUrl = publicUrl;
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+        imageUrl = await uploadImage(blob);
       }
 
       const { error } = await supabase
@@ -159,9 +185,7 @@ export function useBooks() {
           category: bookData.category,
           supplier: bookData.supplier,
           image_url: imageUrl,
-        }])
-        .select()
-        .single();
+        }]);
 
       if (error) {
         if (error.message.includes('policy')) {
@@ -185,23 +209,9 @@ export function useBooks() {
       let imageUrl = bookData.imageUrl;
       
       if (imageUrl?.startsWith('blob:')) {
-        const file = await fetch(imageUrl).then(r => r.blob());
-        const fileName = `book_${Date.now()}.${file.type.split('/')[1]}`;
-        
-        const { error: uploadError } = await supabase.storage
-          .from('book-images')
-          .upload(fileName, file, {
-            cacheControl: '3600',
-            upsert: false
-          });
-
-        if (uploadError) throw uploadError;
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('book-images')
-          .getPublicUrl(fileName);
-
-        imageUrl = publicUrl;
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+        imageUrl = await uploadImage(blob);
       }
 
       const { error } = await supabase
@@ -215,9 +225,7 @@ export function useBooks() {
           ...(bookData.supplier && { supplier: bookData.supplier }),
           ...(imageUrl && { image_url: imageUrl }),
         })
-        .eq('id', id)
-        .select()
-        .single();
+        .eq('id', id);
 
       if (error) {
         if (error.message.includes('policy')) {
@@ -241,9 +249,7 @@ export function useBooks() {
       const { error } = await supabase
         .from('books')
         .delete()
-        .eq('id', id)
-        .select()
-        .single();
+        .eq('id', id);
 
       if (error) {
         if (error.message.includes('policy')) {
