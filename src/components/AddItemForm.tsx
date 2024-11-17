@@ -129,90 +129,88 @@ export default function AddItemForm({
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <optgroup label="පොත්">
-                  <option value="a5-exercise-books">A5 exercise පොත්</option>
-                  <option value="a4-cr-books">A4 CR පොත්</option>
-                  <option value="b5-books">B5 පොත්</option>
-                  <option value="a5-practical-books">A5 පද්ධති පොත්</option>
-                  <option value="notebooks">නෝට්බුක්</option>
-                  <option value="a4-drawing-books">A4 සිතුවිලි පොත්</option>
-                  <option value="a4-science-books">A4 විද්‍යා පොත්</option>
-                  <option value="a4-cr-practical-book">
-                    A4 CR පද්ධති පොත්
-                  </option>
-                  <option value="diaries">දිවානුව</option>
-                  <option value="planners">සංවිධානය</option>
-                  <option value="story-books">කතා පොත්</option>
+                  <option value="a5-අත්හදා-බලන-පොත්">A5 අත්හදා බලන පොත්</option>
+                  <option value="a4-cr-පොත්">A4 CR පොත්</option>
+                  <option value="b5-පොත්">B5 පොත්</option>
+                  <option value="a5-පද්ධති-පොත්">A5 පද්ධති පොත්</option>
+                  <option value="නෝට්බුක්">නෝට්බුක්</option>
+                  <option value="a4-සිතුවිලි-පොත්">A4 සිතුවිලි පොත්</option>
+                  <option value="a4-විද්‍යා-පොත්">A4 විද්‍යා පොත්</option>
+                  <option value="a4-cr-පද්ධති-පොත්">A4 CR පද්ධති පොත්</option>
+                  <option value="දිවානුව">දිවානුව</option>
+                  <option value="සංවිධානය">සංවිධානය</option>
+                  <option value="කතා-පොත්">කතා පොත්</option>
                 </optgroup>
 
                 <optgroup label="පෙන්ස්">
-                  <option value="ball-point-pens">බෝල පින්පත</option>
-                  <option value="gel-pens">ජෙල් පෙන්</option>
-                  <option value="glitter-pens">ග්ලිටර් පෙන්</option>
-                  <option value="fountain-pens">ෆවුන්ටන් පෙන්</option>
-                  <option value="marker-pens">මාර්කර් පෙන්</option>
-                  <option value="whiteboard-pens">වයිට්බෝර්ඩ් පෙන්</option>
-                  <option value="erasable-pens">මකාදැමිය හැකි පෙන්</option>
+                  <option value="බෝල-පින්පත">බෝල පින්පත</option>
+                  <option value="ජෙල්-පෙන්">ජෙල් පෙන්</option>
+                  <option value="ග්ලිටර්-පෙන්">ග්ලිටර් පෙන්</option>
+                  <option value="ෆවුන්ටන්-පෙන්">ෆවුන්ටන් පෙන්</option>
+                  <option value="මාර්කර්-පෙන්">මාර්කර් පෙන්</option>
+                  <option value="වයිට්බෝර්ඩ්-පෙන්">වයිට්බෝර්ඩ් පෙන්</option>
+                  <option value="මකාදැමිය-හැකි-පෙන්">මකාදැමිය හැකි පෙන්</option>
                 </optgroup>
 
                 <optgroup label="බෝතල් සහ කොටස්">
-                  <option value="straw-bottles-kids">දරුවන් සඳහා බෝතල්</option>
-                  <option value="screw-cap-bottles">ස්ක්‍රූ කැප් බෝතල්</option>
-                  <option value="flip-cap-bottles">ෆ්ලිප් කැප් බෝතල්</option>
-                  <option value="squeezable-bottles">
+                  <option value="දරුවන්-සඳහා-බෝතල්">දරුවන් සඳහා බෝතල්</option>
+                  <option value="ස්ක්‍රූ-කැප්-බෝතල්">ස්ක්‍රූ කැප් බෝතල්</option>
+                  <option value="ෆ්ලිප්-කැප්-බෝතල්">ෆ්ලිප් කැප් බෝතල්</option>
+                  <option value="ඉඟිලි-වලට-සකස්-කළ-බෝතල්">
                     ඉඟිලි වලට සකස් කළ බෝතල්
                   </option>
-                  <option value="easy-open-boxes">
+                  <option value="ඉක්මන්-විවෘත-කිරීම්-කොටස්">
                     ඉක්මන් විවෘත කිරීම් කොටස්
                   </option>
-                  <option value="sealed-boxes">සීල් කරන කොටස්</option>
-                  <option value="partitioned-boxes">පැතිකඩ සහිත කොටස්</option>
-                  <option value="water-bottles">ජල බෝතල්</option>
-                  <option value="lunch-boxes">ඉවක්කූ කොටස්</option>
-                  <option value="storage-boxes">සැම්ප්ල මෘදු කොටස්</option>
+                  <option value="සීල්-කරන-කොටස්">සීල් කරන කොටස්</option>
+                  <option value="පැතිකඩ-සහිත-කොටස්">පැතිකඩ සහිත කොටස්</option>
+                  <option value="ජල-බෝතල්">ජල බෝතල්</option>
+                  <option value="ඉවක්කූ-කොටස්">ඉවක්කූ කොටස්</option>
+                  <option value="සැම්ප්ල-මෘදු-කොටස්">සැම්ප්ල මෘදු කොටස්</option>
                 </optgroup>
 
                 <optgroup label="වර්ණ නිෂ්පාදන">
-                  <option value="pastel">පැස්ටල්</option>
-                  <option value="colour-pencil">වර්ණ පෙන්සල</option>
-                  <option value="water-colours">ජල වර්ණ</option>
-                  <option value="felt-pens">ෆෙල්ට් පෙන්</option>
-                  <option value="poster-colours">පෝස්ටර් වර්ණ</option>
-                  <option value="crayons">ක්‍රයෝන්</option>
-                  <option value="oil-paints">තෙල් වර්ණ</option>
-                  <option value="acrylic-paints">ඇක්‍රිලික වර්ණ</option>
-                  <option value="highlighters">අයිල්යිට් පෙන්</option>
+                  <option value="පැස්ටල්">පැස්ටල්</option>
+                  <option value="වර්ණ-පැන්සල්">වර්ණ පැන්සල්</option>
+                  <option value="ජල-වර්ණ">ජල වර්ණ</option>
+                  <option value="ෆෙල්ට්-පෙන්">ෆෙල්ට් පෙන්</option>
+                  <option value="පෝස්ටර්-වර්ණ">පෝස්ටර් වර්ණ</option>
+                  <option value="ක්‍රයෝන්">ක්‍රයෝන්</option>
+                  <option value="තෙල්-වර්ණ">තෙල් වර්ණ</option>
+                  <option value="ඇක්‍රිලික-වර්ණ">ඇක්‍රිලික වර්ණ</option>
+                  <option value="අයිල්යිට්-පෙන්">අයිල්යිට් පෙන්</option>
                 </optgroup>
 
                 <optgroup label="කාර්යාල නිෂ්පාදන">
-                  <option value="files">ෆයිල්</option>
-                  <option value="calculators">ගණනයකාරක</option>
-                  <option value="correction-pens">හෝඳුන් පෙන්</option>
-                  <option value="staplers-and-pins">ස්ටේපලර් සහ පින්</option>
-                  <option value="paper-clips">කඩදාසි කලිප්</option>
-                  <option value="envelopes">සැරැස්ලි</option>
-                  <option value="folders">ෆෝල්ඩර්</option>
+                  <option value="ෆයිල්">ෆයිල්</option>
+                  <option value="ගණනයකාරක">ගණනයකාරක</option>
+                  <option value="හෝඳුන්-පෙන්">හෝඳුන් පෙන්</option>
+                  <option value="ස්ටේපලර්-සහ-පින්">ස්ටේපලර් සහ පින්</option>
+                  <option value="කඩදාසි-කලිප්">කඩදාසි කලිප්</option>
+                  <option value="සැරැස්ලි">සැරැස්ලි</option>
+                  <option value="ෆෝල්ඩර්">ෆෝල්ඩර්</option>
                 </optgroup>
 
                 <optgroup label="පාසල් නිෂ්පාදන">
-                  <option value="pencil">පෙන්සල</option>
-                  <option value="glue">ලොකු ගල</option>
-                  <option value="scissors">පේරා</option>
-                  <option value="sharpeners">පෙන්සල ශාප්පනය</option>
-                  <option value="rulers">මානකුරු</option>
-                  <option value="erasers">මකාදැමීම</option>
-                  <option value="kids-clay">දරුවන්ට ගල</option>
-                  <option value="math-boxes">ගණිත පෙට්ටිය</option>
-                  <option value="geometry-kits">ජ්‍යෝතිශ්‍ය කට්ටල</option>
+                  <option value="පැන්සල්">පැන්සල්</option>
+                  <option value="ලොකු-ගල">ලොකු ගල</option>
+                  <option value="පේරා">පේරා</option>
+                  <option value="පැන්සල්-ශාප්පනය">පැන්සල් ශාප්පනය</option>
+                  <option value="මානකුරු">මානකුරු</option>
+                  <option value="මකාදැමීම">මකාදැමීම</option>
+                  <option value="දරුවන්ට-ගල">දරුවන්ට ගල</option>
+                  <option value="ගණිත-පෙට්ටිය">ගණිත පෙට්ටිය</option>
+                  <option value="ජ්‍යෝතිශ්‍ය-කට්ටල">ජ්‍යෝතිශ්‍ය කට්ටල</option>
                 </optgroup>
 
                 <optgroup label="කා纸 නිෂ්පාදන">
-                  <option value="copy-papers">පිටපත පත්‍ර</option>
-                  <option value="colour-papers">වර්ණ පත්‍ර</option>
-                  <option value="exam-sheets">පරීක්ෂණ පත්‍ර</option>
-                  <option value="foolscap-papers">ෆුල්ස්කැප් පත්‍ර</option>
-                  <option value="writing-pads">ලේඛන පෑඩ්</option>
-                  <option value="sticky-notes">ස්ටික් මතක පත</option>
-                  <option value="notepads">නෝට්පැඩ්</option>
+                  <option value="පිටපත-පත්‍ර">පිටපත පත්‍ර</option>
+                  <option value="වර්ණ-පත්‍ර">වර්ණ පත්‍ර</option>
+                  <option value="පරීක්ෂණ-පත්‍ර">පරීක්ෂණ පත්‍ර</option>
+                  <option value="ෆුල්ස්කැප්-පත්‍ර">ෆුල්ස්කැප් පත්‍ර</option>
+                  <option value="ලේඛන-පෑඩ්">ලේඛන පෑඩ්</option>
+                  <option value="ස්ටික්-මතක-පත">ස්ටික් මතක පත</option>
+                  <option value="නෝට්පැඩ්">නෝට්පැඩ්</option>
                 </optgroup>
               </select>
             </div>
